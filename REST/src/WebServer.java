@@ -73,7 +73,7 @@ public class WebServer extends Thread implements MqttCallback{
             public void run() {
                 while (true){
                     try {
-                        Thread.sleep(1000 * 10);
+                        Thread.sleep(1000 * 60 * 10);
                         setJson(jsonTemp);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -123,6 +123,7 @@ public class WebServer extends Thread implements MqttCallback{
             for (String topic : topics){
                 client.subscribe(topic + "/#", 0);
             }
+            client.subscribe("/api/kill", 0);
 
             //client.publish(topic, "Hello from MQTT".getBytes(), 0, false);
 
@@ -191,9 +192,11 @@ public class WebServer extends Thread implements MqttCallback{
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-//        System.out.println(">> " + new String(message.getPayload()) + " (" + topic + ")");
-        this.addJSONValue(topic, new String(message.getPayload()));
-//        System.out.println(this.json.toString());
+        if (topic.equals("/api/kill")){
+            System.exit(0);
+        }else{
+            this.addJSONValue(topic, new String(message.getPayload()));
+        }
     }
 
     @Override
