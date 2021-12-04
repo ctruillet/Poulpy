@@ -1,0 +1,30 @@
+{
+  "name": "API",
+  "api": {
+    "BDE": {
+      "conso_elec": {
+        "consumption": "2309.2707448648716"
+      },
+      "micro_onde_0": {
+        "number_use": "102",
+        "is_used": "False"
+      },
+      "temperature": "20.799999",
+      "humidity": "65.099998",
+      "detecteur_fumee": {
+        "smoke": "False"
+      }
+    },
+    "weather": {
+      "temperature": 10.62,
+      "humidity": 60,
+      "pressure": 1011
+    },
+    "ADMIN": {
+      "micro_onde_1": {
+        "number_use": "99",
+        "is_used": "True"
+      }
+    }
+  }
+}

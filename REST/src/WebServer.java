@@ -2,59 +2,82 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/*
+     WebServer
+     Classe gerant la liaison entre le broker MQTT et l'API REST
+
+     Le serveur web est un serveur TCP (http://localhost:<port>/) qui attend une requete HTTP
+     et la reponse est un fichier HTML
+     Par défault, le port est 3000
+
+     Le serveur MQTT est un serveur MQTT qui envoie des messages
+     avec des informations sur les capteurs
+
+     Une mise à jour du fichier json est effectuée toutes les 10 minutes.
+     Ce json est stocké dans le fichier data.json.
+
+ */
 
 public class WebServer extends Thread implements MqttCallback{
-    protected int port = 3000;
+    protected int port;
     protected JSONObject json = new JSONObject();
     protected JSONObject jsonTemp = new JSONObject();
-    private boolean isAlive = true;
-    private static final String brokerUrl = "tcp://127.0.0.255:1883";
-    private static final String clientId = "API REST";
-    private ServerSocket serverSocket;
-    private ArrayList<String> topics = new ArrayList<>();
 
-    public WebServer(int port) {
+    private boolean isAlive = true;
+    private ServerSocket serverSocket;
+
+    private final ArrayList<String> topics = new ArrayList<>();
+
+    private static String brokerUrl = "";
+    private static String APIkeyWeatherMap = "";
+
+    private static final String clientId = "API REST";
+
+
+    /**
+    Constructeur de la classe WebServer
+     */
+    public WebServer() {
         super("WebServer");
-        this.port = port;
+
+        // Récupération des parametres sur server
+        this.getConfidentialKeys();
+
 
         this.topics.add("BDE");
         this.topics.add("ADMIN");
 
         this.json.put("name", "API");
-        this.json.put(
-                "api", new JSONObject().put(
-                        "BDE", new JSONObject().put(
-                                "name", "BDE").put(
-                                        "micro_onde_0", new JSONObject().put(
-                                                "number_use", 9).put(
-                                                        "is_used", true)
-                        ).put(
-                                "micro_onde_1", new JSONObject().put(
-                                        "number_use", 8).put(
-                                                "is_used", false)
-                        ).put(
-                                "conso_elec", 3211.67).put(
-                                        "temperature", 29.27).put(
-                                                "humidity", 0.0)
-                )
-        );
+        this.json = this.getJSONFromFile("data.json");
     }
 
+    // Méthodes
+
+    /**
+    Méthode permettant de mettre à jour le fichier json et de le sauvegarder
+     * @param json
+     */
     public void setJson(JSONObject json) {
-        this.json = new JSONObject().put("name", "API").put("api", json);
+        this.json = new JSONObject().
+                put("name", "API").
+                put("api", json);
+        this.saveJSONToFile(json, "data.json");
     }
 
+    /**
+     *
+     */
     public void start() {
         System.out.println("Starting WebServer on port " + port);
 
@@ -73,20 +96,83 @@ public class WebServer extends Thread implements MqttCallback{
             public void run() {
                 while (true){
                     try {
-                        Thread.sleep(1000 * 60 * 10);
+                        Thread.sleep(10 * 60 * 1000);
+                        System.out.println("Thread MQTT wakes up");
+
+                        // Récupération de la météo via l'API WeatherMap à Rangueil
+                        jsonTemp.put("weather",getAPIWeatherMap("Rangueil"));
                         setJson(jsonTemp);
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }finally {
+                        System.out.println("Thread MQTT goes to sleep");
                     }
                 }
+            }
+
+            /**
+             *
+             * @param city
+             * @return
+             */
+            private JSONObject getAPIWeatherMap(String city){
+                //TODO: API WeatherMap
+                try {
+                    JSONObject jsonWeatherMap;
+
+                    String url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + APIkeyWeatherMap;
+                    URL obj = new URL(url);
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(obj.openStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+
+                    }
+                    in.close();
+
+                    JSONObject jsonReceive = new JSONObject(response.toString());
+
+                    jsonWeatherMap = new JSONObject().
+                            put("temperature", Double.
+                                    parseDouble(new DecimalFormat("###.##").
+                                    format(jsonReceive.
+                                            getJSONObject("main").
+                                            getDouble("temp") - 273.15).
+                                    replace(',','.')
+                                    )
+                            ).
+                            put("humidity", jsonReceive.
+                                    getJSONObject("main").
+                                    getDouble("humidity")
+                            ).
+                            put("pressure", jsonReceive.
+                                    getJSONObject("main").
+                                    getDouble("pressure")
+                            );
+
+                    return jsonWeatherMap;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return  null;
+                }
+
             }
         }).start();
 
         this.run();
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     private void addJSONValue(String key, String value){
-        //key = key.substring(1);
         String[] keys = key.split("/");
 
         JSONObject json = this.jsonTemp;
@@ -104,6 +190,10 @@ public class WebServer extends Thread implements MqttCallback{
         json.put(keys[i], value);
     }
 
+    /**
+     *
+     * @param topics
+     */
     private void subscribe(ArrayList<String> topics) {
         MemoryPersistence persistence = new MemoryPersistence();
 
@@ -135,6 +225,9 @@ public class WebServer extends Thread implements MqttCallback{
         }
     }
 
+    /**
+     *
+     */
     public void run() {
         while (this.isAlive) {
             try {
@@ -169,7 +262,8 @@ public class WebServer extends Thread implements MqttCallback{
                 responce += "\r\n\r\n";
 
                 output.println(responce);
-                System.out.println("REPLY\n" + responce + "\n============");
+                System.out.println("Responce sent");
+                //System.out.println("REPLY\n" + responce + "\n============");
                 output.flush();
 
                 socket.close();
@@ -185,22 +279,85 @@ public class WebServer extends Thread implements MqttCallback{
         }
     }
 
+    /**
+     *
+     * @param throwable
+     */
     @Override
     public void connectionLost(Throwable throwable) {
 
     }
 
+    /**
+     *
+     * @param topic
+     * @param message
+     * @throws Exception
+     */
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         if (topic.equals("/api/kill")){
+            this.isAlive = false;
             System.exit(0);
         }else{
             this.addJSONValue(topic, new String(message.getPayload()));
         }
     }
 
+    /**
+     *
+     * @param iMqttDeliveryToken
+     */
     @Override
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
 
+    }
+
+    /**
+     *
+     */
+    private void getConfidentialKeys() {
+        try {
+            FileReader reader = new FileReader("confidential.json");
+            JSONObject json = new JSONObject(new JSONTokener(reader));
+
+            APIkeyWeatherMap = String.valueOf(json.getString("apiKeyWeatherMap"));
+            brokerUrl = json.getString("brokerURL") + ":" + json.getString("brokerPort");
+            this.port = json.getInt("port");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param fileName
+     * @return
+     */
+    private JSONObject getJSONFromFile(String fileName) {
+        try {
+            FileReader reader = new FileReader(fileName);
+            JSONObject json = new JSONObject(new JSONTokener(reader));
+            return json;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param json
+     * @param fileName
+     */
+    private void saveJSONToFile(JSONObject json, String fileName) {
+        try {
+            FileWriter writer = new FileWriter(fileName);
+            writer.write(json.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
