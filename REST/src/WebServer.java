@@ -96,11 +96,12 @@ public class WebServer extends Thread implements MqttCallback{
             public void run() {
                 while (true){
                     try {
+//                        Thread.sleep(10 * 60 * 1000);
                         Thread.sleep(10 * 60 * 1000);
                         System.out.println("Thread MQTT wakes up");
 
                         // Récupération de la météo via l'API WeatherMap à Rangueil
-                        jsonTemp.put("weather",getAPIWeatherMap("Rangueil"));
+                        jsonTemp.put("weather",getAPIWeatherMap(43.5616779f, 1.4703466f));
                         setJson(jsonTemp);
 
                     } catch (InterruptedException e) {
@@ -113,15 +114,16 @@ public class WebServer extends Thread implements MqttCallback{
 
             /**
              *
-             * @param city
+             * @param lat
+             * @param lon
              * @return
              */
-            private JSONObject getAPIWeatherMap(String city){
+            private JSONObject getAPIWeatherMap(float lat, float lon){
                 //TODO: API WeatherMap
                 try {
                     JSONObject jsonWeatherMap;
 
-                    String url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + APIkeyWeatherMap;
+                    String url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=minutely,hourly,daily,alerts&lang=fr&appid=" + APIkeyWeatherMap;
                     URL obj = new URL(url);
 
                     BufferedReader in = new BufferedReader(new InputStreamReader(obj.openStream()));
@@ -140,17 +142,17 @@ public class WebServer extends Thread implements MqttCallback{
                             put("temperature", Double.
                                     parseDouble(new DecimalFormat("###.##").
                                     format(jsonReceive.
-                                            getJSONObject("main").
+                                            getJSONObject("current").
                                             getDouble("temp") - 273.15).
                                     replace(',','.')
                                     )
                             ).
                             put("humidity", jsonReceive.
-                                    getJSONObject("main").
+                                    getJSONObject("current").
                                     getDouble("humidity")
                             ).
                             put("pressure", jsonReceive.
-                                    getJSONObject("main").
+                                    getJSONObject("current").
                                     getDouble("pressure")
                             );
 
