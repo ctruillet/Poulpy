@@ -1,0 +1,78 @@
+baseurl = "http://www.ctruillet.eu"
+title = "Clément Truillet"
+theme = "hugo-coder"
+languagecode = "fr"
+defaultcontentlanguage = "fr"
+
+pygmentsstyle = "bw"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+
+disqusShortname = "ctruillet"
+
+[params]
+  author = "Clément Truillet"
+  info = "Eleve Ingenieur SRI UPSSITECH"
+  keywords = "blog,developer,personal,ctruillet,Clement Truillet"
+  avatarurl = "/img/avatar.png"
+
+  favicon_32 = "/img/favicon-32x32.png"
+  favicon_16 = "/img/favicon-16x16.png"
+
+
+  since = 2019
+
+  enableTwemoji = true
+
+  rtl = false
+
+  colorScheme = "auto"
+  hidecolorschemetoggle = false
+
+# Social links
+[[params.social]]
+    name = "Github"
+    icon = "fa fa-github fa-2x"
+    weight = 1
+    url = "https://github.com/ctruillet/"
+[[params.social]]
+    name = "Gitlab"
+    icon = "fa fa-gitlab fa-2x"
+    weight = 2
+    url = "https://gitlab.com/ctruillet/"
+[[params.social]]
+    name = "Twitter"
+    icon = "fa fa-twitter fa-2x"
+    weight = 3
+    url = "https://twitter.com/C_Truillet"
+
+[languages]
+	[languages.fr]
+        languagename = "Français"
+
+        [languages.fr.menu]
+
+            [[languages.fr.menu.main]]
+            name = "/CV"
+            weight = 1
+            url = "cv/CV_2022.pdf"
+
+            [[languages.fr.menu.main]]
+            name = "/Contact"
+            weight = 2
+            url = "contact/"
+
+
+    [languages.en]
+        languagename = "English"
+
+		[languages.en.params]
+            author = "Clément Truillet"
+            info = "Student Engineer SRI UPSSITECH"
+			
+        [languages.en.menu]
+
+            [[languages.en.menu.main]]
+            name = "/CV"
+            weight = 1
+            url = "cv/CV_2022.en.pdf"

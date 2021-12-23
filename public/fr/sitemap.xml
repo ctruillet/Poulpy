@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://www.ctruillet.eu/categories/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://www.ctruillet.eu/en/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="http://www.ctruillet.eu/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://www.ctruillet.eu/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://www.ctruillet.eu/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="http://www.ctruillet.eu/"
+                />
+  </url>
+  
+  <url>
+    <loc>http://www.ctruillet.eu/contact/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.ctruillet.eu/tags/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="http://www.ctruillet.eu/en/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="http://www.ctruillet.eu/tags/"
+                />
+  </url>
+  
+</urlset>
