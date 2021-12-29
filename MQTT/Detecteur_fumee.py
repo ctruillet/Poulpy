@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 class Detecteur_fumee:
-    def __init__(self, id='0', ip='127.0.0.255', port=1883, agregat = "BDE"):
+    def __init__(self, id='', ip='localhost', port=1883, agregat = "BDE"):
         self.smoke = False
         self.smoke_time = 0
         self.id = id

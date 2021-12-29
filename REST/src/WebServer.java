@@ -56,7 +56,7 @@ public class WebServer extends Thread implements MqttCallback{
 
 
         this.topics.add("BDE");
-        this.topics.add("ADMIN");
+        this.topics.add("Admin");
 
         this.json.put("name", "API");
         this.json = this.getJSONFromFile("data.json");
@@ -72,7 +72,7 @@ public class WebServer extends Thread implements MqttCallback{
         this.json = new JSONObject().
                 put("name", "API").
                 put("api", json);
-        this.saveJSONToFile(json, "data.json");
+        this.saveJSONToFile(this.json, "data.json");
     }
 
     /**

@@ -2,16 +2,13 @@ import time
 from Conso_elec import Conso_elec
 from Detecteur_fumee import Detecteur_fumee
 from Micro_onde import Micro_onde
-from Thermometre import Thermometre
 
-conso_elec = Conso_elec(id='')
+conso_elec = Conso_elec(ip="127.0.0.255")
 
-thermometre = Thermometre(id='')
+micro_onde0 = Micro_onde(ip="127.0.0.255", id="0")
+micro_onde1 = Micro_onde(ip="127.0.0.255", id="1")
 
-micro_onde0 = Micro_onde(id="0")
-micro_onde1 = Micro_onde(id="1", agregat="ADMIN")
-
-detecteur_fumee = Detecteur_fumee(id='')
+detecteur_fumee = Detecteur_fumee(ip="127.0.0.255", )
 
 while True :
     micro_onde0.update_is_used()
@@ -23,8 +20,6 @@ while True :
     micro_onde1.send_nb_use()
 
     detecteur_fumee.send_is_smoke()
-
-    # thermometre.send_temperature()
 
     conso_micro_onde = 300 * micro_onde0.used + 500 * micro_onde1.used
     conso_elec.send_conso_elec(conso_add=conso_micro_onde)

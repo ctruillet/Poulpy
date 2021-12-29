@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 class Micro_onde:
-    def __init__(self, id="0", ip='127.0.0.255', port=1883, agregat = "BDE"):
+    def __init__(self, id="", ip='127.0.0.255', port=1883, agregat = "BDE"):
         self.used = False
         self.nb_use = 0
         self.used_time = 0

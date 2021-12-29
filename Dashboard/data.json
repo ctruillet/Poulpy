@@ -1,0 +1,51 @@
+{
+	"name": "API",
+	"api": {
+		"BDE": {
+			"conso_elec": {
+				"consumption": "3500"
+			},
+			"micro_onde_0": {
+				"number_use": "225",
+				"is_used": "False"
+			},
+			"micro_onde_1": {
+				"number_use": "209",
+				"is_used": "True"
+			},
+			"temperature": "22.70",
+			"humidity": "53.30",
+			"detecteur_fumee": {
+				"smoke": "False"
+			}
+		},
+		"weather": {
+			"temperature": 13.39,
+			"humidity": 72,
+			"pressure": 1023
+		},
+		"Admin": {
+			"thermometre": {
+				"temperature": 24.131236407625515"
+			},
+			"conso_elec": {
+				"consumption": "1394.7145159206216"
+			},
+			"detecteur_fumee": {
+				"smoke": "False"
+			},
+			"SRI": {
+				"nb_person": "1"
+			},
+			"Direction": {
+				"nb_person": "2"
+			},
+			"GCGEO": {
+				"nb_person": "3"
+			},
+			"STRI": {
+				"nb_person": "0"
+			}
+		}
+	}
+}

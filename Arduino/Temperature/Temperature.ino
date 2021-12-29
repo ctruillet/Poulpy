@@ -3,8 +3,10 @@
 #include "DHT.h"
 
 /* change it with your ssid-password */
-const char* ssid = SSID;
-const char* password = PASSWORD;
+//const char* ssid = "SSID";
+//const char* password = "PASSWORD";
+const char* ssid = "Gagoon";
+const char* password = "ED214A7FCF";
 /* this is the IP of PC/raspberry where you installed MQTT Server 
 on Wins use "ipconfig" 
 on Linux use "ifconfig" to get its IP address */
@@ -104,10 +106,10 @@ void loop() {
     temperature = dht.readTemperature();
     humidity = dht.readHumidity();
     if (!isnan(temperature) && !isnan(humidity)) {
-      snprintf (msg, 20, "%lf", temperature);
+      snprintf (msg, 20, "%l.2f", temperature);
       client.publish(TEMPERATURE_TOPIC, msg);
       
-      snprintf (msg, 20, "%lf", humidity);
+      snprintf (msg, 20, "%l.2f", humidity);
       client.publish(HUMIDITY_TOPIC, msg);
     }
   }
