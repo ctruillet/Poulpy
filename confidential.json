@@ -2,5 +2,5 @@
   "brokerURL" : "tcp://127.0.0.255",
   "brokerPort" : "1883",
   "port" : 3000,
-  "apiKeyWeatherMap" : ""
+  "apiKeyWeatherMap" : "f9e06ebaee3d0ea0b35c934263681bfe"
 }

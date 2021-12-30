@@ -63,7 +63,7 @@ public void setup(){
                 }
             }
           });
-    lastTimeUpdate = "Derniere Mise à Jour : " + hour() + ":" + minute();
+    lastTimeUpdate = "Derniere Mise à Jour : " + hour() + ":" + (minute()<10? "0" + minute():minute());
 }
 
 public void draw(){
@@ -133,12 +133,18 @@ void init(){
   textFont(titleFont,70);
   text("Info Administration U3",20,100);
   image(img_weather,posImgW_x,posImgW_y,90,90);
+  fill(color(0,255,0,30));
+  rect(posBDE_x,posBDE_y,150,280);
+  rect(posGC_x,posGC_y,126,285);
+  rect(posSRI_x,posSRI_y,120,285);
+  rect(posSTRI_x,posSTRI_y,140,153);
+  rect(posDir_x, posDir_y,280,298);
 }
 
 
 void mouseClicked(){
   updateData();
-  lastTimeUpdate = "Derniere Mise à Jour : " + hour() + ":" + minute();
+  lastTimeUpdate = "Derniere Mise à Jour : " + hour() + ":" + (minute()<10? "0" + minute():minute());
   
   if(mouseX >= posBDE_x && mouseX <= posBDE_x+150 && mouseY >= posBDE_y && mouseY <= posBDE_y + 280){
     fsm = FSM.BDE;
